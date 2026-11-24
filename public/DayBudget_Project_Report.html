@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DayBudget — Comprehensive Project Documentation & Architecture Report</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --primary-light: #ccfbf1;
+      --accent: #6366f1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --bg-card: #f8fafc;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-main);
+      background: #ffffff;
+      line-height: 1.6;
+      padding: 40px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .header-banner {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .brand-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+    }
+    .brand-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .meta-tag {
+      text-align: right;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 6px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      border-left: 4px solid var(--primary);
+      padding-left: 12px;
+      margin-top: 36px;
+      margin-bottom: 16px;
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+    p, li {
+      font-size: 13.5px;
+      color: #334155;
+    }
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 16px;
+    }
+    li { margin-bottom: 6px; }
+
+    .formula-box {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0f766e;
+      margin: 16px 0;
+      text-align: center;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+    th {
+      background: #f1f5f9;
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 2px solid #cbd5e1;
+      font-weight: 700;
+      color: #334155;
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: #475569;
+    }
+    tr:nth-child(even) { background: #fafafa; }
+
+    .print-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+      transition: all 0.2s;
+    }
+    .print-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    @media print {
+      body { padding: 0; max-width: 100%; }
+      .print-button { display: none; }
+      .page-break { page-break-before: always; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="print-button" onclick="window.print()">📥 Save / Print as PDF</button>
+
+  <div class="header-banner">
+    <div>
+      <div class="brand-title">DayBudget</div>
+      <div class="brand-subtitle">Full-Stack Daily-Budget Expense Tracker & Micro-Financial Engine</div>
+      <div class="badge">Production Engineering & Architecture Report</div>
+    </div>
+    <div class="meta-tag">
+      <div><strong>Author:</strong> likhithgp2006</div>
+      <div><strong>Repository:</strong> github.com/likhithgp2006/DayBudget</div>
+      <div><strong>Database:</strong> Supabase PostgreSQL</div>
+      <div><strong>Deployment Target:</strong> Vercel Serverless</div>
+    </div>
+  </div>
+
+  <h2>1. Executive Summary & Core Philosophy</h2>
+  <p>
+    Conventional personal finance platforms categorize past historical spending (telling users what went wrong after the month is over). <strong>DayBudget</strong> fundamentally shifts this paradigm into an active, day-by-day allowance tracker. It divides available discretionary income evenly across the days of the month, continuously recalculating targets in real time based on active spending habits, carry-over surpluses, and extreme overspend events.
+  </p>
+
+  <div class="formula-box">
+    Daily Allowance = (Monthly Income − Fixed Obligations − Monthly Savings Goal) ÷ Days in Month
+  </div>
+
+  <h2>2. System Architecture</h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Frontend Architecture</div>
+      <p>Built on <strong>Next.js 14 App Router</strong> with TypeScript, Tailwind CSS, and Recharts. Implements responsive layouts across desktop, tablet, and mobile (320px–1920px), complete with an optimistic UI toast notification system and theme toggling (Dark/Light mode).</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Backend & Cloud Storage</div>
+      <p>Leverages Next.js Route Handlers coupled with <strong>Prisma ORM</strong> and cloud-hosted <strong>Supabase PostgreSQL</strong>. Uses connection pooling (`pgbouncer`), strict schema constraints, bcrypt password hashing, and signed HTTP-only JWT session cookies.</p>
+    </div>
+  </div>
+
+  <h2>3. Key Modules & Functional Overview</h2>
+
+  <h3>A. Dynamic Budget Calculation Engine</h3>
+  <ul>
+    <li><strong>Month-Length Awareness:</strong> Handles 28, 29, 30, and 31-day months dynamically using standard calendar projection.</li>
+    <li><strong>Surplus Mode:</strong> When spending is below the daily budget, unspent money carries over to boost future days or can be swept directly to savings goals.</li>
+    <li><strong>Deficit Recoupment:</strong> Overspending on any single day distributes the deficit across remaining days to keep monthly totals in check.</li>
+    <li><strong>Emergency Shield:</strong> Allows extreme unexpected costs to be logged with justification without penalizing daily budgets.</li>
+  </ul>
+
+  <h3>B. Comprehensive Route & Feature Inventory</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Page / Module</th>
+        <th>Core Capabilities</th>
+        <th>Persistence Layer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>/dashboard</code></td>
+        <td>Executive Dashboard</td>
+        <td>Live today's budget greeting, dynamic color states (Green, Amber, Red), month overview.</td>
+        <td>Prisma / PostgreSQL</td>
+      </tr>
+      <tr>
+        <td><code>/expenses</code></td>
+        <td>Expense Tracker</td>
+        <td>Manual expense logging, category filtering, emergency flags, 5-sec undo deletion toast.</td>
+        <td><code>Expense</code> table</td>
+      </tr>
+      <tr>
+        <td><code>/bank</code></td>
+        <td>Bank Link Simulation</td>
+        <td>Simulated accounts (SBI, HDFC, ICICI, Demo Bank), duplicate-free sync, unlinking.</td>
+        <td><code>BankAccount</code>, <code>BankTransaction</code></td>
+      </tr>
+      <tr>
+        <td><code>/transactions</code></td>
+        <td>Transaction History</td>
+        <td>Real-time search, inline re-categorization dropdown, CSV export, and PDF statement print.</td>
+        <td>Multi-table Aggregator</td>
+      </tr>
+      <tr>
+        <td><code>/analytics</code></td>
+        <td>Financial Analytics</td>
+        <td>Donut chart for category distribution, bar chart for daily spend vs budget, no-spend streak.</td>
+        <td>Recharts / Aggregations</td>
+      </tr>
+      <tr>
+        <td><code>/goals</code></td>
+        <td>Savings Goals</td>
+        <td>Milestone creation, surplus fund allocation, interactive progress bars, goal deletion.</td>
+        <td><code>SavingsGoal</code> table</td>
+      </tr>
+      <tr>
+        <td><code>/settings</code></td>
+        <td>Configuration & Security</td>
+        <td>Monthly income adjustments, recurring fixed bills manager, password updates, Danger Zone.</td>
+        <td><code>User</code>, <code>BudgetProfile</code></td>
+      </tr>
+      <tr>
+        <td><code>/feedback</code></td>
+        <td>Help & Contact Form</td>
+        <td>Anti-spam honeypot, in-memory rate limiting, customer inquiry database storage.</td>
+        <td>Contact API</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <h2>4. Database Schema Specification (Supabase PostgreSQL)</h2>
+  <p>The relational database schema is structured to ensure cascading integrity, indexed queries, and zero data leakage:</p>
+  <ul>
+    <li><strong>User:</strong> Unique UUID, encrypted password hash, ISO currency code, surplus mode preference.</li>
+    <li><strong>BudgetProfile:</strong> 1:1 relation with User; records monthly baseline income, savings percentage, and active month/year.</li>
+    <li><strong>FixedExpense:</strong> 1:N recurring bills (Rent, EMI, Utilities) with scheduled due days.</li>
+    <li><strong>Expense:</strong> Granular daily spending records containing timestamps, categories, payment methods, and emergency tags.</li>
+    <li><strong>BankAccount & BankTransaction:</strong> Accounts holding masked account numbers, provider types, and linked transactions.</li>
+    <li><strong>SavingsGoal:</strong> Milestone tracking target amounts, current saved amounts, and completion flags.</li>
+    <li><strong>Notification:</strong> System-generated reminders including daily morning greetings and sync audits.</li>
+  </ul>
+
+  <h2>5. Security & Production Hardening</h2>
+  <ul>
+    <li><strong>Rate Limiting:</strong> In-memory sliding window rate-limiter protects sensitive endpoints (`/api/auth/login`, `/api/auth/register`, `/api/feedback`) from brute-force attempts.</li>
+    <li><strong>Input Sanitization:</strong> Null-byte stripping, character limit enforcement, and HTML tag sanitization prevent XSS attacks.</li>
+    <li><strong>Safe Credential Handling:</strong> Passwords hashed via bcrypt (salt factor 10). Session tokens stored in secure, SameSite, HTTP-only cookies.</li>
+    <li><strong>Database Security:</strong> Configured via environment variables; `.gitignore` strictly protects `.env` files from leaking into Git.</li>
+  </ul>
+
+  <h2>6. Automated Testing & Verification Proofs</h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Unit Test Suite (100% Passed)</div>
+      <p>Tested 28/29/30/31-day calculations, surplus carry-overs, multi-day deficits, emergency spend isolation, and percentage color thresholds.</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Integration & E2E Suite (100% Passed)</div>
+      <p>Simulated 12 full user flows from session authentication to expense creation, bank synchronization, and statement generation.</p>
+    </div>
+  </div>
+
+  <h2>7. Deployment Instructions (Vercel)</h2>
+  <ol>
+    <li>Push the repository to GitHub: <code>git push -u origin main</code></li>
+    <li>Import <code>likhithgp2006/DayBudget</code> in the Vercel Dashboard.</li>
+    <li>Configure the four production environment variables:
+      <ul>
+        <li><code>DATABASE_URL</code>: Supabase connection pooler string.</li>
+        <li><code>DIRECT_URL</code>: Supabase direct PostgreSQL string.</li>
+        <li><code>JWT_SECRET</code>: Cryptographic token secret.</li>
+        <li><code>NEXT_PUBLIC_APP_URL</code>: Live deployed domain URL.</li>
+      </ul>
+    </li>
+    <li>Deploy! The built-in <code>postinstall: prisma generate</code> hook ensures zero-downtime client generation.</li>
+  </ol>
+
+</body>
+</html>

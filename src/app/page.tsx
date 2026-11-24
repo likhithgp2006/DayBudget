@@ -36,11 +36,14 @@ export default function LandingPage() {
       setDemoLoading(true)
       const res = await fetch('/api/auth/demo', { method: 'POST' })
       const data = await res.json()
-      if (data.success) {
-        router.push('/dashboard')
+      if (res.ok && data.success) {
+        window.location.href = '/dashboard'
+      } else {
+        alert(data.error || 'Failed to initialize demo account. Please check your database connection.')
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e)
+      alert(e.message || 'Network error while launching demo')
     } finally {
       setDemoLoading(false)
     }

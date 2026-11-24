@@ -19,6 +19,7 @@ import {
   X,
   Coins,
   MessageSquare,
+  Calendar,
 } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 import { NotificationDrawer } from './NotificationDrawer'
@@ -41,6 +42,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   const navLinks = [
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/calendar', label: 'Yearly Calendar', icon: Calendar },
     { href: '/expenses', label: 'Expenses', icon: Receipt },
     { href: '/transactions', label: 'Transactions', icon: ArrowLeftRight },
     { href: '/bank', label: 'Bank Accounts', icon: Landmark },

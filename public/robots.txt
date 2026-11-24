@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /expenses
+Disallow: /bank
+Disallow: /transactions
+Disallow: /goals
+
+Sitemap: https://daybudget.app/sitemap.xml

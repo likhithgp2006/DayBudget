@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id              String          @id @default(uuid())
+  email           String          @unique
+  name            String
+  passwordHash    String
+  currency        String          @default("INR")
+  surplusMode     String          @default("CARRY_OVER") // "CARRY_OVER" or "SAVE"
+  emergencyBuffer Float           @default(0)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  budgetProfile   BudgetProfile?
+  fixedExpenses   FixedExpense[]
+  expenses        Expense[]
+  bankAccounts    BankAccount[]
+  bankTransactions BankTransaction[]
+  savingsGoals    SavingsGoal[]
+  notifications   Notification[]
+  customCategories Category[]
+}
+
+model BudgetProfile {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  monthlyIncome      Float
+  savingsGoalPercent Float    @default(0)
+  savingsGoalAmount  Float    @default(0)
+  month              Int      @default(11)
+  year               Int      @default(2026)
+  updatedAt          DateTime @updatedAt
+
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model FixedExpense {
+  id          String   @id @default(uuid())
+  userId      String
+  name        String
+  amount      Float
+  category    String   @default("Bills")
+  dueDay      Int      @default(1)
+  isRecurring Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  userId    String?
+  name      String
+  icon      String   @default("Tag")
+  color     String   @default("#14b8a6")
+  isCustom  Boolean  @default(false)
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Expense {
+  id                  String   @id @default(uuid())
+  userId              String
+  amount              Float
+  date                DateTime
+  categoryName        String
+  note                String?
+  paymentMethod       String   @default("UPI") // "UPI", "Credit Card", "Debit Card", "Cash", "Net Banking"
+  isEmergency         Boolean  @default(false)
+  emergencyReason     String?
+  isRecurring         Boolean  @default(false)
+  recurringFrequency  String?  // "MONTHLY", "WEEKLY"
+  bankTransactionId   String?  @unique
+  isMock              Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BankAccount {
+  id                  String            @id @default(uuid())
+  userId              String
+  bankName            String
+  accountType         String            @default("SAVINGS")
+  accountNumberMasked String
+  balance             Float
+  status              String            @default("CONNECTED") // "CONNECTED", "SYNCING", "DISCONNECTED"
+  provider            String            @default("MOCK_BANK")
+  isMock              Boolean           @default(true)
+  lastSyncedAt        DateTime          @default(now())
+  createdAt           DateTime          @default(now())
+
+  user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions        BankTransaction[]
+}
+
+model BankTransaction {
+  id               String       @id @default(uuid())
+  externalId       String?      @unique
+  bankAccountId    String
+  userId           String
+  amount           Float
+  balanceAfter     Float        @default(0)
+  type             String       @default("DEBIT") // "DEBIT", "CREDIT"
+  paymentMethod    String       @default("UPI")
+  merchantName     String
+  rawDescription   String
+  date             DateTime
+  category         String       @default("Other")
+  isCategorized    Boolean      @default(true)
+  syncedToExpense  Boolean      @default(false)
+  expenseId        String?
+  isMock           Boolean      @default(true)
+  createdAt        DateTime     @default(now())
+
+  bankAccount      BankAccount  @relation(fields: [bankAccountId], references: [id], onDelete: Cascade)
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SavingsGoal {
+  id            String   @id @default(uuid())
+  userId        String
+  title         String
+  targetAmount  Float
+  currentAmount Float    @default(0)
+  targetDate    DateTime?
+  icon          String   @default("Target")
+  color         String   @default("teal")
+  isCompleted   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("SYSTEM") // "MORNING_GREETING", "THRESHOLD_80", "THRESHOLD_100", "EVENING_REMINDER", "SYSTEM"
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  category  String   @default("General") // "Bug", "Feature Request", "General", "Praise"
+  subject   String
+  message   String
+  rating    Int?     @default(5)
+  userId    String?
+  createdAt DateTime @default(now())
+}
+
